@@ -2,12 +2,16 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 800
+
+// Drawing functions
+void draw_rectangle(uint32_t* pixels, uint32_t x0, uint32_t y0, uint32_t width, uint32_t height, uint32_t color);
 
 struct Renderer_State
 {
     SDL_Window* window;
+    SDL_Surface* window_surface;
     SDL_Surface* pixel_buffer;
 };
 
@@ -27,6 +31,19 @@ SDL_AppResult SDL_AppInit(void** app_state, int argc, char** argv)
     if (state.window == NULL) {
         SDL_Log("Could not create window: %s\n", SDL_GetError());
         return SDL_APP_FAILURE;
+    }
+
+
+    state.window_surface = SDL_GetWindowSurface(state.window);
+    if (state.window_surface == NULL) {
+        SDL_Log("Couldn't get window surface from main renderer window: %s\n", SDL_GetError());
+        return SDL_APP_FAILURE;
+    }
+
+    // Activate VSync for every vertical refresh
+    if (!SDL_SetWindowSurfaceVSync(state.window, 1)) {
+        SDL_Log("Could not enable vsync: %s\n", SDL_GetError());
+        // Not fatal, continue freely
     }
 
     state.pixel_buffer = SDL_CreateSurface(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_PIXELFORMAT_ARGB8888);
@@ -67,19 +84,26 @@ SDL_AppResult SDL_AppIterate(void* app_state)
 
     for (uint32_t y = 0; y < WINDOW_HEIGHT; y++) {
         for (uint32_t x = 0; x < WINDOW_WIDTH; x++) {
-            pixels[(WINDOW_WIDTH * y) + x] = 0xFFFFFF00;
+            // Black background
+            pixels[(WINDOW_WIDTH * y) + x] = 0xFF000000;
         }
     }
-    SDL_UnlockSurface(state->pixel_buffer);
 
-    SDL_Surface* window_surface = SDL_GetWindowSurface(state->window);
-    if (window_surface == NULL) {
-        SDL_Log("Couldn't get window surface from main renderer window: %s\n", SDL_GetError());
-        return SDL_APP_FAILURE;
+    // Draw debug grid
+    // 10 is the offset - we end up drawing dots
+    for (uint32_t y = 0; y < WINDOW_HEIGHT; y += 10) {
+        for (uint32_t x = 0; x < WINDOW_WIDTH; x += 10) {
+            pixels[(WINDOW_WIDTH * y) + x] = 0xFF333333;
+        }
     }
 
+    draw_rectangle(pixels, 100, 200, 50, 240, 0xFF00FF00);
+    draw_rectangle(pixels, 700, 100, 250, 620, 0xFFFF00FF);
+
+    SDL_UnlockSurface(state->pixel_buffer);
+
     // Copy surface to the screen
-    SDL_BlitSurfaceScaled(state->pixel_buffer, NULL, window_surface, NULL, SDL_SCALEMODE_NEAREST);
+    SDL_BlitSurface(state->pixel_buffer, NULL, state->window_surface, NULL);
     SDL_UpdateWindowSurface(state->window);
     return SDL_APP_CONTINUE;
 }
@@ -90,4 +114,17 @@ void SDL_AppQuit(void* app_state, SDL_AppResult result)
     if (state->pixel_buffer) SDL_DestroySurface(state->pixel_buffer);
     if (state->window) SDL_DestroyWindow(state->window);
     SDL_Quit();
+}
+
+void draw_rectangle(
+    uint32_t* pixels,
+    uint32_t x0, uint32_t y0,
+    uint32_t width, uint32_t height,
+    uint32_t color)
+{
+    for (uint32_t y1 = y0; y1 < y0 + height; y1++) {
+        for (uint32_t x1 = x0; x1 < x0 + width; x1++) {
+            pixels[(WINDOW_WIDTH * y1) + x1] = color;
+        }
+    }
 }
