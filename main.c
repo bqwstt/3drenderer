@@ -2,11 +2,8 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
-#define WINDOW_WIDTH 1200
-#define WINDOW_HEIGHT 800
-
-// Drawing functions
-void draw_rectangle(uint32_t* pixels, uint32_t x0, uint32_t y0, uint32_t width, uint32_t height, uint32_t color);
+#include "src/vec.h"
+#include "src/shapes.h"
 
 struct Renderer_State
 {
@@ -15,7 +12,11 @@ struct Renderer_State
     SDL_Surface* pixel_buffer;
 };
 
-SDL_AppResult SDL_AppInit(void** app_state, int argc, char** argv)
+struct FVec2
+orthographic_project_point_to_screen(struct FVec3 point);
+
+SDL_AppResult
+SDL_AppInit(void** app_state, int argc, char** argv)
 {
     static struct Renderer_State state;
     *app_state = &state;
@@ -55,7 +56,8 @@ SDL_AppResult SDL_AppInit(void** app_state, int argc, char** argv)
     return SDL_APP_CONTINUE;
 }
 
-SDL_AppResult SDL_AppEvent(void* app_state, SDL_Event* event)
+SDL_AppResult
+SDL_AppEvent(void* app_state, SDL_Event* event)
 {
     switch (event->type)
     {
@@ -70,11 +72,11 @@ SDL_AppResult SDL_AppEvent(void* app_state, SDL_Event* event)
         }
     }
 
-
     return SDL_APP_CONTINUE;
 }
 
-SDL_AppResult SDL_AppIterate(void* app_state)
+SDL_AppResult
+SDL_AppIterate(void* app_state)
 {
     struct Renderer_State* state = (struct Renderer_State*) app_state;
 
@@ -85,7 +87,7 @@ SDL_AppResult SDL_AppIterate(void* app_state)
     for (uint32_t y = 0; y < WINDOW_HEIGHT; y++) {
         for (uint32_t x = 0; x < WINDOW_WIDTH; x++) {
             // Black background
-            pixels[(WINDOW_WIDTH * y) + x] = 0xFF000000;
+            pixels[(WINDOW_WIDTH * y) + x] = COLOR_BLACK;
         }
     }
 
@@ -93,12 +95,12 @@ SDL_AppResult SDL_AppIterate(void* app_state)
     // 10 is the offset - we end up drawing dots
     for (uint32_t y = 0; y < WINDOW_HEIGHT; y += 10) {
         for (uint32_t x = 0; x < WINDOW_WIDTH; x += 10) {
-            pixels[(WINDOW_WIDTH * y) + x] = 0xFF333333;
+            pixels[(WINDOW_WIDTH * y) + x] = COLOR_WHITE;
         }
     }
 
-    draw_rectangle(pixels, 100, 200, 50, 240, 0xFF00FF00);
-    draw_rectangle(pixels, 700, 100, 250, 620, 0xFFFF00FF);
+    draw_2d_rectangle_points(pixels, 100, 200, 50, 240, COLOR_MAGENTA);
+    draw_2d_rectangle_points(pixels, 700, 100, 250, 620, COLOR_YELLOW);
 
     SDL_UnlockSurface(state->pixel_buffer);
 
@@ -108,7 +110,8 @@ SDL_AppResult SDL_AppIterate(void* app_state)
     return SDL_APP_CONTINUE;
 }
 
-void SDL_AppQuit(void* app_state, SDL_AppResult result)
+void
+SDL_AppQuit(void* app_state, SDL_AppResult result)
 {
     struct Renderer_State* state = (struct Renderer_State*) app_state;
     if (state->pixel_buffer) SDL_DestroySurface(state->pixel_buffer);
@@ -116,15 +119,11 @@ void SDL_AppQuit(void* app_state, SDL_AppResult result)
     SDL_Quit();
 }
 
-void draw_rectangle(
-    uint32_t* pixels,
-    uint32_t x0, uint32_t y0,
-    uint32_t width, uint32_t height,
-    uint32_t color)
+struct FVec2
+orthographic_project_point_to_screen(struct FVec3 point)
 {
-    for (uint32_t y1 = y0; y1 < y0 + height; y1++) {
-        for (uint32_t x1 = x0; x1 < x0 + width; x1++) {
-            pixels[(WINDOW_WIDTH * y1) + x1] = color;
-        }
-    }
+    struct FVec2 result;
+    result.x = point.x;
+    result.y = point.y;
+    return result;
 }
