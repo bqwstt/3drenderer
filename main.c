@@ -99,8 +99,16 @@ SDL_AppIterate(void* app_state)
         }
     }
 
-    draw_2d_rectangle_points(pixels, 100, 200, 50, 240, COLOR_MAGENTA);
-    draw_2d_rectangle_points(pixels, 700, 100, 250, 620, COLOR_YELLOW);
+    Rectangle rect;
+    rect.x = 500;
+    rect.y = 250;
+    rect.width = 50;
+    rect.height = 100;
+
+    draw_2d_rectangle_filled_points(pixels, 100, 200, 50, 240, COLOR_MAGENTA);
+    draw_2d_rectangle_filled_points(pixels, 700, 100, 250, 620, COLOR_YELLOW);
+    draw_2d_rectangle_outline_shape(pixels, rect, COLOR_ORANGE);
+    draw_2d_line_points(pixels, 100, 100, 200, 200, COLOR_RED);
 
     SDL_UnlockSurface(state->pixel_buffer);
 

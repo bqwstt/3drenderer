@@ -10,15 +10,6 @@
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
 
-#define countof(a)  (size)(sizeof(a) / sizeof(*(a)))
-#define lengthof(s) (countof(s) - 1)
-
-#define assert(c)  while (!(c)) __builtin_unreachable()
-#define todo(msg) do { \
-    fprintf(stderr, "TODO: %s (%s:%d)\n", msg, __FILE__, __LINE__); \
-    __builtin_trap(); \
-} while (0)
-
 // Using ARGB8888 format
 typedef uint32_t Color;
 #define COLOR_BLACK     (Color) 0xFF000000
@@ -66,8 +57,10 @@ typedef struct Cube Cube;
 void draw_2d_point(uint32_t* pixels, uint32_t x, uint32_t y, Color color); /* Draw 2D point using x and y coordinates */
 void draw_2d_line_points(uint32_t* pixels, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, Color color); /* Draw 2D line using x and y coordinates */
 void draw_2d_line_shape(uint32_t* pixels, Line line, Color color); /* Draw 2D line */
-void draw_2d_rectangle_points(uint32_t* pixels, uint32_t x0, uint32_t y0, uint32_t width, uint32_t height, Color color); 
-void draw_2d_rectangle_shape(uint32_t* pixels, Rectangle rect, Color color); /* Draw 2D rectangle */
+void draw_2d_rectangle_filled_points(uint32_t* pixels, uint32_t x0, uint32_t y0, uint32_t width, uint32_t height, Color color);  /* Draw a color-filled 2D rectangle using coordinates */
+void draw_2d_rectangle_filled_shape(uint32_t* pixels, Rectangle rect, Color color); /* Draw a color-filled 2D rectangle */
+void draw_2d_rectangle_outline_points(uint32_t* pixels, uint32_t x0, uint32_t y0, uint32_t width, uint32_t height, Color color); /* Draw 2D rectangle outlines using coordinates */
+void draw_2d_rectangle_outline_shape(uint32_t* pixels, Rectangle rect, Color color); /* Draw 2D rectangle outlines */
 void draw_3d_cube_shape(uint32_t* pixels, Cube cube, Color color); /* Draw 3D cube */
 
 #endif // SHAPES_H
