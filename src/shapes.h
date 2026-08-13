@@ -53,7 +53,6 @@ struct Cube
 typedef struct Cube Cube;
 
 /// === Drawing functions ===
-
 void draw_2d_point(uint32_t* pixels, uint32_t x, uint32_t y, Color color); /* Draw 2D point using x and y coordinates */
 void draw_2d_line_points(uint32_t* pixels, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, Color color); /* Draw 2D line using x and y coordinates */
 void draw_2d_line_shape(uint32_t* pixels, Line line, Color color); /* Draw 2D line */

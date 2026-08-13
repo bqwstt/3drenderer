@@ -29,12 +29,12 @@ draw_2d_line_points(uint32_t* pixels, uint32_t x0, uint32_t y0, uint32_t x1, uin
     //     * │          * │      Notice the extra space when on the x-axis,
     //       │y        *  │x     these get eliminated once we iterate over y.
     //    *  │'        *  │'     Think of rotating the screen when filling.
-    //       │a       *   │a                  
-    //   *   │x ───>  *   │x                  
-    //       │i      *    │i                  
-    //  *    │s      *    │s                  
-    //  ─────┘       ─────┘                   
-    //  x-axis       y-axis                   
+    //       │a       *   │a
+    //   *   │x ───>  *   │x
+    //       │i      *    │i
+    //  *    │s      *    │s
+    //  ─────┘       ─────┘
+    //  x-axis       y-axis
     bool_t steep = (x0-x1) < (y0-y1);
     if (steep) {
         swap(x0, y0);
