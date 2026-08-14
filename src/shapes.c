@@ -51,14 +51,27 @@ draw_2d_line_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0, u
         swap(y0, y1);
     }
 
+    // @TODO: Understand the ierror thing?
+    // The Bresenham's line drawing algorithm article uses all integers
+    // instead of floats for performance reasons, but in our case it also
+    // fixes a couple of bugs related to precision and/or representation.
+    // I'm keeping the integer-only approach as it works but I don't really
+    // understand it.
+    uint32_t y = y0;
+    uint32_t ierror = 0;
+
     for (int x = x0; x <= x1; x++) {
-        float t = (x-x0) / (float)(x1-x0);
-        int y = round(y0 + (y1-y0) * t);
         if (steep) {
-            // Transpose the line
+            // If transposed, de-transpose
             draw_2d_point(pixels, camera, y, x, color);
         } else {
             draw_2d_point(pixels, camera, x, y, color);
+        }
+
+        ierror += 2 * (y1 - y0);
+        if (ierror > (x1 - x0)) {
+            y += y1 > y0 ? 1 : -1;
+            ierror -= 2 * (x1 - x0);
         }
     }
 }
