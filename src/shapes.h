@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "vec.h"
+#include "camera.h"
 
 // @TODO: Move these
 #define WINDOW_WIDTH 1200
@@ -53,13 +54,14 @@ struct Cube
 typedef struct Cube Cube;
 
 /// === Drawing functions ===
-void draw_2d_point(uint32_t* pixels, uint32_t x, uint32_t y, Color color); /* Draw 2D point using x and y coordinates */
-void draw_2d_line_points(uint32_t* pixels, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, Color color); /* Draw 2D line using x and y coordinates */
-void draw_2d_line_shape(uint32_t* pixels, Line line, Color color); /* Draw 2D line */
-void draw_2d_rectangle_filled_points(uint32_t* pixels, uint32_t x0, uint32_t y0, uint32_t width, uint32_t height, Color color);  /* Draw a color-filled 2D rectangle using coordinates */
-void draw_2d_rectangle_filled_shape(uint32_t* pixels, Rectangle rect, Color color); /* Draw a color-filled 2D rectangle */
-void draw_2d_rectangle_outline_points(uint32_t* pixels, uint32_t x0, uint32_t y0, uint32_t width, uint32_t height, Color color); /* Draw 2D rectangle outlines using coordinates */
-void draw_2d_rectangle_outline_shape(uint32_t* pixels, Rectangle rect, Color color); /* Draw 2D rectangle outlines */
-void draw_3d_cube_shape(uint32_t* pixels, Cube cube, Color color); /* Draw 3D cube */
+void draw_2d_point(uint32_t* pixels, Camera camera, uint32_t x, uint32_t y, Color color); /* Draw 2D point using x and y coordinates */
+void draw_2d_line_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, Color color); /* Draw 2D line using x and y coordinates */
+void draw_2d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color); /* Draw 2D line */
+void draw_2d_rectangle_filled_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0, uint32_t width, uint32_t height, Color color);  /* Draw a color-filled 2D rectangle using coordinates */
+void draw_2d_rectangle_filled_shape(uint32_t* pixels, Camera camera, Rectangle rect, Color color); /* Draw a color-filled 2D rectangle */
+void draw_2d_rectangle_outline_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0, uint32_t width, uint32_t height, Color color); /* Draw 2D rectangle outlines using coordinates */
+void draw_2d_rectangle_outline_shape(uint32_t* pixels, Camera camera, Rectangle rect, Color color); /* Draw 2D rectangle outlines */
+
+void draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color); /* Draw 3D cube */
 
 #endif // SHAPES_H

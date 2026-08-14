@@ -2,12 +2,13 @@
 #define UTILS_H
 
 #include <stdint.h>
+#include <stdio.h>
 
 typedef float   float32_t;
 typedef double  float64_t;
 typedef int32_t bool_t;
 
-#define countof(a)  (size)(sizeof(a) / sizeof(*(a)))
+#define countof(a)  (size_t)(sizeof(a) / sizeof(*(a)))
 #define lengthof(s) (countof(s) - 1)
 
 #define assert(c)  while (!(c)) __builtin_unreachable()

@@ -2,18 +2,19 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
-#include "src/vec.h"
 #include "src/shapes.h"
+#include "src/camera.h"
 
 struct Renderer_State
 {
     SDL_Window* window;
     SDL_Surface* window_surface;
     SDL_Surface* pixel_buffer;
+
+    Camera camera;
 };
 
-struct FVec2
-orthographic_project_point_to_screen(struct FVec3 point);
+static Cube cube;
 
 SDL_AppResult
 SDL_AppInit(void** app_state, int argc, char** argv)
@@ -52,6 +53,20 @@ SDL_AppInit(void** app_state, int argc, char** argv)
         SDL_Log("Could not create surface: %s\n", SDL_GetError());
         return SDL_APP_FAILURE;
     }
+
+    Camera camera;
+    camera.fov = 640;
+    camera.position = (FVec3) { .x = 0, .y = 0, .z = -3 };
+    state.camera = camera;
+
+    cube.points[0] = (FVec3) { .x = -1, .y = -1, .z =  1}; // Top left, front face
+    cube.points[1] = (FVec3) { .x =  1, .y = -1, .z =  1}; // Top right front face
+    cube.points[2] = (FVec3) { .x = -1, .y =  1, .z =  1}; // Bottom left, front face
+    cube.points[3] = (FVec3) { .x =  1, .y =  1, .z =  1}; // Bottom right, front face
+    cube.points[4] = (FVec3) { .x = -1, .y = -1, .z = -1}; // Top left, back face
+    cube.points[5] = (FVec3) { .x =  1, .y = -1, .z = -1}; // Top right back face
+    cube.points[6] = (FVec3) { .x = -1, .y =  1, .z = -1}; // Bottom left, back face
+    cube.points[7] = (FVec3) { .x =  1, .y =  1, .z = -1}; // Bottom right, back face
 
     return SDL_APP_CONTINUE;
 }
@@ -104,11 +119,15 @@ SDL_AppIterate(void* app_state)
     rect.y = 250;
     rect.width = 50;
     rect.height = 100;
+    
+    state->camera.position.x += 0.1f;
+    state->camera.position.z -= 0.005f;
 
-    draw_2d_rectangle_filled_points(pixels, 100, 200, 50, 240, COLOR_MAGENTA);
-    draw_2d_rectangle_filled_points(pixels, 700, 100, 250, 620, COLOR_YELLOW);
-    draw_2d_rectangle_outline_shape(pixels, rect, COLOR_ORANGE);
-    draw_2d_line_points(pixels, 100, 100, 200, 200, COLOR_RED);
+    draw_2d_rectangle_filled_points(pixels, state->camera, 100, 200, 50, 240, COLOR_MAGENTA);
+    draw_2d_rectangle_filled_points(pixels, state->camera, 700, 100, 250, 620, COLOR_YELLOW);
+    draw_2d_rectangle_outline_shape(pixels, state->camera, rect, COLOR_ORANGE);
+    draw_2d_line_points(pixels, state->camera, 100, 100, 200, 200, COLOR_RED);
+    draw_3d_cube_shape(pixels, state->camera, cube, COLOR_GREEN);
 
     SDL_UnlockSurface(state->pixel_buffer);
 
@@ -125,13 +144,4 @@ SDL_AppQuit(void* app_state, SDL_AppResult result)
     if (state->pixel_buffer) SDL_DestroySurface(state->pixel_buffer);
     if (state->window) SDL_DestroyWindow(state->window);
     SDL_Quit();
-}
-
-struct FVec2
-orthographic_project_point_to_screen(struct FVec3 point)
-{
-    struct FVec2 result;
-    result.x = point.x;
-    result.y = point.y;
-    return result;
 }
