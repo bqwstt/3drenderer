@@ -68,7 +68,7 @@ draw_2d_line_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0, u
 inline void
 draw_2d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color)
 {
-    draw_2d_line_points(pixels, camera, line.x0, line.y0, line.x1, line.y0, color);
+    draw_2d_line_points(pixels, camera, line.x0, line.y0, line.x1, line.y1, color);
 }
 
 /// Draws and fills a 2D rectangle at (x, y, x + width, y + width) with `color`
