@@ -2,6 +2,7 @@
 #include "shapes.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 Line make_3d_line(FVec3 from, FVec3 to)
 {
@@ -117,17 +118,22 @@ draw_2d_segment_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0
     //  *    │s      *    │s
     //  ─────┘       ─────┘
     //  x-axis       y-axis
-    bool_t steep = (x0-x1) < (y0-y1);
+    int32_t ax = x0;
+    int32_t bx = x1;
+    int32_t ay = y0;
+    int32_t by = y1;
+
+    bool_t steep = abs(ax - bx) < abs(ay - by);
     if (steep) {
-        swap(x0, y0);
-        swap(x1, y1);
+        swap(ax, ay);
+        swap(bx, by);
     }
 
     // Our loop goes from x0-->x1, which assumes we're going from left to right.
     // In case that we're starting from the right, we have to swap these points.
-    if (x0 > x1) {
-        swap(x0, x1);
-        swap(y0, y1);
+    if (ax > bx) {
+        swap(ax, bx);
+        swap(ay, by);
     }
 
     // @TODO: Understand the ierror thing?
@@ -136,10 +142,10 @@ draw_2d_segment_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0
     // fixes a couple of bugs related to precision and/or representation.
     // I'm keeping the integer-only approach as it works but I don't really
     // understand it.
-    uint32_t y = y0;
-    uint32_t ierror = 0;
+    int32_t y = ay;
+    int32_t ierror = 0;
 
-    for (int x = x0; x <= x1; x++) {
+    for (int x = ax; x <= bx; x++) {
         if (steep) {
             // If transposed, de-transpose
             draw_2d_point(pixels, camera, y, x, color);
@@ -147,10 +153,10 @@ draw_2d_segment_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0
             draw_2d_point(pixels, camera, x, y, color);
         }
 
-        ierror += 2 * (y1 - y0);
-        if (ierror > (x1 - x0)) {
-            y += y1 > y0 ? 1 : -1;
-            ierror -= 2 * (x1 - x0);
+        ierror += 2 * abs(by-ay);
+        if (ierror > (bx - ax)) {
+            y += by > ay ? 1 : -1;
+            ierror -= 2 * (bx - ax);
         }
     }
 }
@@ -270,41 +276,37 @@ void draw_3d_plane_shape(uint32_t* pixels, Camera camera, Plane plane, Color col
 void
 draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
 {
-    for (int i = 0; i < countof(cube.points); i++) {
-        FVec3 point = cube.points[i];
-
-        // Move the point away from the camera
-        point.x -= camera.position.x;
-        point.y -= camera.position.y;
-        point.z -= camera.position.z;
-
-        FVec2 projected_point = perspective_project_3d_point(camera, point);
-        // @DEBUG: Put it in the middle of the screen
-        // This changes the vanishing point
-        projected_point.x += (float) WINDOW_WIDTH / 2;
-        projected_point.y += (float) WINDOW_HEIGHT / 2;
-
-        // Draw a 8x8 rectangle just to make it a bit bigger
-        draw_2d_rectangle_filled_points(
-            pixels,
-            camera,
-            projected_point.x, projected_point.y,
-            8, 8,
-            color
-        );
-    }
-
-    // Attempt to draw wireframe
-    // Note: this does not work as expected.
+    // Draw wireframe by connecting vertices with lines
     for (int i = 0; i < countof(cube.lines); i++) {
         FVec2 line = cube.lines[i];
-        int from_index = (int) line.x;
-        int to_index = (int) line.y;
+        FVec3 from_point = cube.points[(int) line.x];
+        FVec3 to_point = cube.points[(int) line.y];
 
-        Line line_to_draw;
-        line_to_draw.from = cube.points[from_index];
-        line_to_draw.to = cube.points[to_index];
-        draw_3d_line_shape(pixels, camera, line_to_draw, color);
+        from_point.x -= camera.position.x;
+        from_point.y -= camera.position.y;
+        from_point.z -= camera.position.z;
+
+        to_point.x -= camera.position.x;
+        to_point.y -= camera.position.y;
+        to_point.z -= camera.position.z;
+
+        FVec2 from = perspective_project_3d_point(camera, from_point);
+        FVec2 to = perspective_project_3d_point(camera, to_point);
+
+        // @DEBUG: Put it in the middle of the screen
+        // This changes the vanishing point
+        from.x += (float) WINDOW_WIDTH / 2;
+        from.y += (float) WINDOW_HEIGHT / 2;
+        to.x += (float) WINDOW_WIDTH / 2;
+        to.y += (float) WINDOW_HEIGHT / 2;
+
+        draw_2d_segment_points(
+            pixels,
+            camera,
+            from.x, from.y,
+            to.x, to.y,
+            color
+        );
     }
 }
 
