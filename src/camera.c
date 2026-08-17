@@ -1,7 +1,7 @@
 #include "camera.h"
 
 FVec2
-orthographic_project_point_to_screen(Camera camera, FVec3 point)
+orthographic_project_3d_point(Camera camera, FVec3 point)
 {
     FVec2 projected_point;
     projected_point.x = camera.fov * point.x;
@@ -10,7 +10,7 @@ orthographic_project_point_to_screen(Camera camera, FVec3 point)
 }
 
 FVec2
-perspective_project_point_to_screen(Camera camera, FVec3 point)
+perspective_project_3d_point(Camera camera, FVec3 point)
 {
     FVec2 projected_point;
     projected_point.x = (camera.fov * point.x) / point.z;

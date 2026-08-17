@@ -28,7 +28,7 @@ typedef uint32_t Color;
 #define COLOR_PINK      (Color) 0xFFFF80C0
 #define COLOR_BROWN     (Color) 0xFF804000
 
-/// === Shape definitions ===
+/// === 2D Shape definitions ===
 struct Rectangle
 {
     uint32_t x;
@@ -38,30 +38,68 @@ struct Rectangle
 };
 typedef struct Rectangle Rectangle;
 
-struct Line
+/// 2D line
+struct Segment
 {
     uint32_t x0;
     uint32_t y0;
     uint32_t x1;
     uint32_t y1;
 };
+typedef struct Segment Segment;
+
+/// === 3D Shape definitions ===
+/// @TODO: Revisit usage of floats. Maybe we should use ints?
+struct Line
+{
+    union {
+        struct {
+            FVec3 from;
+            FVec3 to;
+        };
+        FVec3 points[2];
+    };
+};
 typedef struct Line Line;
+
+struct Plane
+{
+    FVec3 points[4];
+    FVec2 lines[4];
+};
+typedef struct Plane Plane;
 
 struct Cube
 {
     FVec3 points[8];
+    FVec2 lines[12];
 };
 typedef struct Cube Cube;
 
+/// === Creation functions ===
+Line make_3d_line(FVec3 from, FVec3 to);
+Plane make_3d_plane(FVec3 position, float width, float height);
+Cube make_3d_cube(FVec3 position /*, float size */);
+
 /// === Drawing functions ===
 void draw_2d_point(uint32_t* pixels, Camera camera, uint32_t x, uint32_t y, Color color); /* Draw 2D point using x and y coordinates */
-void draw_2d_line_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, Color color); /* Draw 2D line using x and y coordinates */
-void draw_2d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color); /* Draw 2D line */
+void draw_2d_segment_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, Color color); /* Draw 2D segment (line) using x and y coordinates */
+void draw_2d_segment_shape(uint32_t* pixels, Camera camera, Segment segment, Color color); /* Draw 2D segment (line) */
 void draw_2d_rectangle_filled_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0, uint32_t width, uint32_t height, Color color);  /* Draw a color-filled 2D rectangle using coordinates */
 void draw_2d_rectangle_filled_shape(uint32_t* pixels, Camera camera, Rectangle rect, Color color); /* Draw a color-filled 2D rectangle */
 void draw_2d_rectangle_outline_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0, uint32_t width, uint32_t height, Color color); /* Draw 2D rectangle outlines using coordinates */
 void draw_2d_rectangle_outline_shape(uint32_t* pixels, Camera camera, Rectangle rect, Color color); /* Draw 2D rectangle outlines */
 
+void draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color); /* Draw 3D line */
+void draw_3d_plane_shape(uint32_t* pixels, Camera camera, Plane plane, Color color); /* Draw 3D rectangle (or "plane") */
 void draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color); /* Draw 3D cube */
+
+/// === Transformation functions ===
+// @TODO: Separate drawing from transforming?
+// If we turn this into a library, people can maybe just use "draw_*" functions
+// to draw and handle transformations themselves.
+void transform_rotate_2d_segment(Segment* segment, float angle);
+void transform_rotate_3d_line(Line* line, FVec3 rotation);
+void transform_rotate_3d_cube(Cube* cube, FVec3 rotation);
 
 #endif // SHAPES_H

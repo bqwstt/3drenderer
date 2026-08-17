@@ -15,6 +15,7 @@ struct Renderer_State
 };
 
 static Cube cube;
+FVec3 cube_rotation = { 0, 0, 0 };
 
 SDL_AppResult
 SDL_AppInit(void** app_state, int argc, char** argv)
@@ -55,18 +56,14 @@ SDL_AppInit(void** app_state, int argc, char** argv)
     }
 
     Camera camera;
-    camera.fov = 640;
-    camera.position = (FVec3) { .x = 0, .y = 0, .z = -3 };
+    camera.fov = 100;
+    camera.position = (FVec3) { .x = 0, .y = 0, .z = -5 };
     state.camera = camera;
 
-    cube.points[0] = (FVec3) { .x = -1, .y = -1, .z =  1}; // Top left, front face
-    cube.points[1] = (FVec3) { .x =  1, .y = -1, .z =  1}; // Top right front face
-    cube.points[2] = (FVec3) { .x = -1, .y =  1, .z =  1}; // Bottom left, front face
-    cube.points[3] = (FVec3) { .x =  1, .y =  1, .z =  1}; // Bottom right, front face
-    cube.points[4] = (FVec3) { .x = -1, .y = -1, .z = -1}; // Top left, back face
-    cube.points[5] = (FVec3) { .x =  1, .y = -1, .z = -1}; // Top right back face
-    cube.points[6] = (FVec3) { .x = -1, .y =  1, .z = -1}; // Bottom left, back face
-    cube.points[7] = (FVec3) { .x =  1, .y =  1, .z = -1}; // Bottom right, back face
+    cube = make_3d_cube(fvec3_zero());
+    cube_rotation.x = 0.008;
+    cube_rotation.y = 0.004;
+    cube_rotation.z = 0.008;
 
     return SDL_APP_CONTINUE;
 }
@@ -114,19 +111,7 @@ SDL_AppIterate(void* app_state)
         }
     }
 
-    Rectangle rect;
-    rect.x = 500;
-    rect.y = 250;
-    rect.width = 50;
-    rect.height = 100;
-    
-    state->camera.position.x += 0.1f;
-    state->camera.position.z -= 0.005f;
-
-    draw_2d_rectangle_filled_points(pixels, state->camera, 100, 200, 50, 240, COLOR_MAGENTA);
-    draw_2d_rectangle_filled_points(pixels, state->camera, 700, 100, 250, 620, COLOR_YELLOW);
-    draw_2d_rectangle_outline_shape(pixels, state->camera, rect, COLOR_ORANGE);
-    draw_2d_line_points(pixels, state->camera, 100, 100, 200, 200, COLOR_RED);
+    transform_rotate_3d_cube(&cube, cube_rotation);
     draw_3d_cube_shape(pixels, state->camera, cube, COLOR_GREEN);
 
     SDL_UnlockSurface(state->pixel_buffer);
