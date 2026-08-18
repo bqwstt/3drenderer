@@ -2,7 +2,8 @@
 
 #include <math.h>
 
-FVec2 fvec2_zero()
+FVec2
+fvec2_zero()
 {
     FVec2 result;
     result.x = 0.0f;
@@ -10,7 +11,8 @@ FVec2 fvec2_zero()
     return result;
 }
 
-FVec3 fvec3_zero()
+FVec3
+fvec3_zero()
 {
     FVec3 result;
     result.x = 0.0f;
@@ -19,7 +21,8 @@ FVec3 fvec3_zero()
     return result;
 }
 
-FVec2 fvec2_from_point(float x, float y)
+FVec2
+fvec2_from_point(float x, float y)
 {
     FVec2 result;
     result.x = x;
@@ -27,7 +30,8 @@ FVec2 fvec2_from_point(float x, float y)
     return result;
 }
 
-FVec2 fvec2_rotate(FVec2 vec, float angle)
+FVec2
+fvec2_rotate(FVec2 vec, float angle)
 {
     FVec2 result;
     result.x = vec.x * cos(angle) - vec.y * sin(angle);
@@ -35,7 +39,8 @@ FVec2 fvec2_rotate(FVec2 vec, float angle)
     return result;
 }
 
-FVec3 fvec3_from_point(float x, float y, float z)
+FVec3
+fvec3_from_point(float x, float y, float z)
 {
     FVec3 result;
     result.x = x;
@@ -47,7 +52,8 @@ FVec3 fvec3_from_point(float x, float y, float z)
 /// Rotate vectors using rotation matrix
 /// References:
 /// * https://en.wikipedia.org/wiki/Rotation_matrix
-FVec3 fvec3_rotate_x(FVec3 vec, float angle)
+FVec3
+fvec3_rotate_x(FVec3 vec, float angle)
 {
     FVec3 result;
     result.x = vec.x;
@@ -56,7 +62,8 @@ FVec3 fvec3_rotate_x(FVec3 vec, float angle)
     return result;
 }
 
-FVec3 fvec3_rotate_y(FVec3 vec, float angle)
+FVec3
+fvec3_rotate_y(FVec3 vec, float angle)
 {
     FVec3 result;
     result.x = vec.x * cos(angle) - vec.z * sin(angle);
@@ -65,7 +72,8 @@ FVec3 fvec3_rotate_y(FVec3 vec, float angle)
     return result;
 }
 
-FVec3 fvec3_rotate_z(FVec3 vec, float angle)
+FVec3
+fvec3_rotate_z(FVec3 vec, float angle)
 {
     FVec3 result;
     result.x = vec.x * cos(angle) - vec.y * sin(angle);

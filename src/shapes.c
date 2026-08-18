@@ -6,7 +6,8 @@
 
 /// #region Shape defs
 
-Line make_3d_line(FVec3 from, FVec3 to)
+Line
+make_3d_line(FVec3 from, FVec3 to)
 {
     Line line;
     line.from = from;
@@ -14,7 +15,8 @@ Line make_3d_line(FVec3 from, FVec3 to)
     return line;
 }
 
-Plane make_3d_plane(FVec3 position, float width, float height)
+Plane
+make_3d_plane(FVec3 position, float width, float height)
 {
     Plane plane;    
 
@@ -38,7 +40,8 @@ Plane make_3d_plane(FVec3 position, float width, float height)
     return plane;
 }
 
-Cube make_3d_cube(FVec3 position /*, float size */)
+Cube
+make_3d_cube(FVec3 position /*, float size */)
 {
     Cube cube;
 
@@ -220,7 +223,9 @@ draw_2d_rectangle_outline_shape(uint32_t* pixels, Camera camera, Rectangle rect,
 
 /// #region 3D drawing
 
-void draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color)
+/// Projects and draws a 3D line (2D `Segment` -> 3D `Line`)
+void
+draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color)
 {
     FVec2 projected_points[2];
     for (int i = 0; i < countof(line.points); i++) {
@@ -248,7 +253,9 @@ void draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color)
     );
 }
 
-void draw_3d_plane_shape(uint32_t* pixels, Camera camera, Plane plane, Color color)
+/// Projects and draws a 3D plane (2D `Rectangle` -> 3D `Plane`)
+void
+draw_3d_plane_shape(uint32_t* pixels, Camera camera, Plane plane, Color color)
 {
     FVec2 projected_points[4];
     for (int i = 0; i < countof(plane.points); i++) {
@@ -279,6 +286,7 @@ void draw_3d_plane_shape(uint32_t* pixels, Camera camera, Plane plane, Color col
     );
 }
 
+/// Projects and draws a 3D cube
 void
 draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
 {
@@ -295,6 +303,7 @@ draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
 
 /// #region Transforms
 
+/// Rotates a `Segment` by `angle` radians
 void
 transform_rotate_2d_segment(Segment* segment, float angle)
 {
@@ -306,6 +315,7 @@ transform_rotate_2d_segment(Segment* segment, float angle)
     segment->y1 = segment->y0 + sin(angle) * dx + cos(angle) * dy;
 }
 
+/// Rotates a `Cube` with `rotation` radians (in all x, y and z)
 void
 transform_rotate_3d_cube(Cube* cube, FVec3 rotation)
 {
