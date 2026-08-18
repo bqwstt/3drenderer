@@ -4,6 +4,8 @@
 #include <math.h>
 #include <stdlib.h>
 
+/// #region Shape defs
+
 Line make_3d_line(FVec3 from, FVec3 to)
 {
     Line line;
@@ -82,6 +84,8 @@ Cube make_3d_cube(FVec3 position /*, float size */)
 
     return cube;
 }
+
+/// #region 2D drawing
 
 /// Draws a 2D point at (x, y) with `color`
 inline void
@@ -214,6 +218,8 @@ draw_2d_rectangle_outline_shape(uint32_t* pixels, Camera camera, Rectangle rect,
     draw_2d_rectangle_outline_points(pixels, camera, rect.x, rect.y, rect.width, rect.height, color);
 }
 
+/// #region 3D drawing
+
 void draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color)
 {
     FVec2 projected_points[2];
@@ -284,38 +290,10 @@ draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
 
         Line line = make_3d_line(from_point, to_point);
         draw_3d_line_shape(pixels, camera, line, color);
-
-        // from_point.x -= camera.position.x;
-        // from_point.y -= camera.position.y;
-        // from_point.z -= camera.position.z;
-
-        // to_point.x -= camera.position.x;
-        // to_point.y -= camera.position.y;
-        // to_point.z -= camera.position.z;
-
-        // FVec2 from = perspective_project_3d_point(camera, from_point);
-        // FVec2 to = perspective_project_3d_point(camera, to_point);
-
-
-
-        // // @DEBUG: Put it in the middle of the screen
-        // // This changes the vanishing point
-        // from.x += (float) WINDOW_WIDTH / 2;
-        // from.y += (float) WINDOW_HEIGHT / 2;
-        // to.x += (float) WINDOW_WIDTH / 2;
-        // to.y += (float) WINDOW_HEIGHT / 2;
-
-        // draw_2d_segment_points(
-        //     pixels,
-        //     camera,
-        //     from.x, from.y,
-        //     to.x, to.y,
-        //     color
-        // );
-
-        // draw_3d_line_shape(uint32_t *pixels, Camera camera, Line line, Color color)
     }
 }
+
+/// #region Transforms
 
 void
 transform_rotate_2d_segment(Segment* segment, float angle)

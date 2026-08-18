@@ -28,7 +28,8 @@ typedef uint32_t Color;
 #define COLOR_PINK      (Color) 0xFFFF80C0
 #define COLOR_BROWN     (Color) 0xFF804000
 
-/// === 2D Shape definitions ===
+/// #region 2D shape definitions
+
 struct Rectangle
 {
     uint32_t x;
@@ -48,7 +49,8 @@ struct Segment
 };
 typedef struct Segment Segment;
 
-/// === 3D Shape definitions ===
+/// #region 3D shape definitions
+
 /// @TODO: Revisit usage of floats. Maybe we should use ints?
 struct Line
 {
@@ -76,12 +78,14 @@ struct Cube
 };
 typedef struct Cube Cube;
 
-/// === Creation functions ===
+/// #region Creation functions
+
 Line make_3d_line(FVec3 from, FVec3 to);
 Plane make_3d_plane(FVec3 position, float width, float height);
 Cube make_3d_cube(FVec3 position /*, float size */);
 
-/// === Drawing functions ===
+/// #region Drawing functions
+
 void draw_2d_point(uint32_t* pixels, Camera camera, uint32_t x, uint32_t y, Color color); /* Draw 2D point using x and y coordinates */
 void draw_2d_segment_points(uint32_t* pixels, Camera camera, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, Color color); /* Draw 2D segment (line) using x and y coordinates */
 void draw_2d_segment_shape(uint32_t* pixels, Camera camera, Segment segment, Color color); /* Draw 2D segment (line) */
@@ -94,7 +98,8 @@ void draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color)
 void draw_3d_plane_shape(uint32_t* pixels, Camera camera, Plane plane, Color color); /* Draw 3D rectangle (or "plane") */
 void draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color); /* Draw 3D cube */
 
-/// === Transformation functions ===
+/// #region Transformation functions
+
 // @TODO: Separate drawing from transforming?
 // If we turn this into a library, people can maybe just use "draw_*" functions
 // to draw and handle transformations themselves.
