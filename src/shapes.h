@@ -39,6 +39,12 @@ struct Rectangle
 };
 typedef struct Rectangle Rectangle;
 
+struct Triangle
+{
+    FVec2 points[3];
+};
+typedef struct Triangle Triangle;
+
 /// 2D line
 struct Segment
 {
@@ -74,7 +80,8 @@ typedef struct Plane Plane;
 struct Cube
 {
     FVec3 points[8];
-    FVec2 lines[12];
+    FVec2 edges[12];
+    FVec3 faces[12];
 };
 typedef struct Cube Cube;
 

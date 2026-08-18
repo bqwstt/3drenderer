@@ -50,14 +50,14 @@ make_3d_cube(FVec3 position /*, float size */)
     float half_size = 1.0;
 
     // Create vertices
-    cube.points[0] = (FVec3) { .x = -half_size, .y = -half_size, .z =  half_size}; // Top left, back face
-    cube.points[1] = (FVec3) { .x =  half_size, .y = -half_size, .z =  half_size}; // Top right back face
-    cube.points[2] = (FVec3) { .x = -half_size, .y =  half_size, .z =  half_size}; // Bottom left, back face
-    cube.points[3] = (FVec3) { .x =  half_size, .y =  half_size, .z =  half_size}; // Bottom right, back face
-    cube.points[4] = (FVec3) { .x = -half_size, .y = -half_size, .z = -half_size}; // Top left, front face
-    cube.points[5] = (FVec3) { .x =  half_size, .y = -half_size, .z = -half_size}; // Top right front face
-    cube.points[6] = (FVec3) { .x = -half_size, .y =  half_size, .z = -half_size}; // Bottom left, front face
-    cube.points[7] = (FVec3) { .x =  half_size, .y =  half_size, .z = -half_size}; // Bottom right, front face
+    cube.points[0] = (FVec3) { .x = -half_size, .y = -half_size, .z =  half_size}; // (1) Top left, back face
+    cube.points[1] = (FVec3) { .x =  half_size, .y = -half_size, .z =  half_size}; // (2) Top right back face
+    cube.points[2] = (FVec3) { .x = -half_size, .y =  half_size, .z =  half_size}; // (3) Bottom left, back face
+    cube.points[3] = (FVec3) { .x =  half_size, .y =  half_size, .z =  half_size}; // (4) Bottom right, back face
+    cube.points[4] = (FVec3) { .x = -half_size, .y = -half_size, .z = -half_size}; // (5) Top left, front face
+    cube.points[5] = (FVec3) { .x =  half_size, .y = -half_size, .z = -half_size}; // (6) Top right front face
+    cube.points[6] = (FVec3) { .x = -half_size, .y =  half_size, .z = -half_size}; // (7) Bottom left, front face
+    cube.points[7] = (FVec3) { .x =  half_size, .y =  half_size, .z = -half_size}; // (8) Bottom right, front face
 
     for (int i = 0; i < 8; i++) {
         cube.points[i].x += position.x;
@@ -65,25 +65,51 @@ make_3d_cube(FVec3 position /*, float size */)
         cube.points[i].z += position.z;
     }
 
-    // Connect vertices with lines
-    // @TODO: Make these IVec2 instead?
-    // Front face
-    cube.lines[0] = (FVec2) { 0, 1 }; // Top left (B) -> top right (B)
-    cube.lines[1] = (FVec2) { 1, 3 }; // Top right (B) -> bottom right (B)
-    cube.lines[2] = (FVec2) { 3, 2 }; // Bottom right (B) -> bottom left (B)
-    cube.lines[3] = (FVec2) { 2, 0 }; // Bottom left (B) -> top left (B)
+    // Connect vertices with edges (using array indexes, starting from 0)
+    // Front face edges
+    cube.edges[0] = (FVec2) { 0, 1 }; // Top left (B) -> top right (B)
+    cube.edges[1] = (FVec2) { 1, 3 }; // Top right (B) -> bottom right (B)
+    cube.edges[2] = (FVec2) { 3, 2 }; // Bottom right (B) -> bottom left (B)
+    cube.edges[3] = (FVec2) { 2, 0 }; // Bottom left (B) -> top left (B)
 
-    // Back face
-    cube.lines[4] = (FVec2) { 4, 5 }; // Top left (F) -> top right (F)
-    cube.lines[5] = (FVec2) { 5, 7 }; // Top right (F) -> bottom right (F)
-    cube.lines[6] = (FVec2) { 7, 6 }; // Bottom right (F) -> bottom left (F)
-    cube.lines[7] = (FVec2) { 6, 4 }; // Bottom left (F) -> top left (F)
+    // Back face edges
+    cube.edges[4] = (FVec2) { 4, 5 }; // Top left (F) -> top right (F)
+    cube.edges[5] = (FVec2) { 5, 7 }; // Top right (F) -> bottom right (F)
+    cube.edges[6] = (FVec2) { 7, 6 }; // Bottom right (F) -> bottom left (F)
+    cube.edges[7] = (FVec2) { 6, 4 }; // Bottom left (F) -> top left (F)
 
-    // Connect faces together
-    cube.lines[8] = (FVec2) { 0, 4 }; // Top left (B) -> top left (F)
-    cube.lines[9] = (FVec2) { 1, 5 }; // Top right (B) -> top right (F)
-    cube.lines[10] = (FVec2) { 2, 6 }; // Bottom left (B) -> bottom left (F)
-    cube.lines[11] = (FVec2) { 3, 7 }; // Bottom right (B) -> bottom right (F)
+    // Connect front and back face together with edges
+    cube.edges[8] = (FVec2) { 0, 4 }; // Top left (B) -> top left (F)
+    cube.edges[9] = (FVec2) { 1, 5 }; // Top right (B) -> top right (F)
+    cube.edges[10] = (FVec2) { 2, 6 }; // Bottom left (B) -> bottom left (F)
+    cube.edges[11] = (FVec2) { 3, 7 }; // Bottom right (B) -> bottom right (F)
+
+    // Connect (triangular) faces (using face ids, starting from 1)
+    // cube.faces[0] = (FVec3) { 1, 2, 3 }; // Front (1/2)
+    // cube.faces[1] = (FVec3) { 1, 3, 4 }; // Front (2/2)
+    // cube.faces[2] = (FVec3) { 4, 3, 5 }; // Right (1/2)
+    // cube.faces[3] = (FVec3) { 4, 5, 6 }; // Right (2/2)
+    // cube.faces[4] = (FVec3) { 6, 5, 7 }; // Back (1/2)
+    // cube.faces[5] = (FVec3) { 6, 7, 8 }; // Back (2/2)
+    // cube.faces[6] = (FVec3) { 8, 7, 2 }; // Left (1/2)
+    // cube.faces[7] = (FVec3) { 8, 2, 1 }; // Left (2/2)
+    // cube.faces[8] = (FVec3) { 2, 7, 5 }; // Top (1/2)
+    // cube.faces[9] = (FVec3) { 2, 5, 3 }; // Top (2/2)
+    // cube.faces[10] = (FVec3) { 6, 8, 1 }; // Bottom (1/2)
+    // cube.faces[11] = (FVec3) { 6, 1, 4 }; // Bottom (2/2)
+
+    cube.faces[0] = (FVec3) { 1, 2, 3 }; // Back (1/2)
+    cube.faces[1] = (FVec3) { 2, 4, 3 }; // Back (2/2)
+    cube.faces[2] = (FVec3) { 2, 6, 4 }; // Right (1/2)
+    cube.faces[3] = (FVec3) { 6, 8, 4 }; // Right (2/2)
+    cube.faces[4] = (FVec3) { 5, 7, 6 }; // Front (1/2)
+    cube.faces[5] = (FVec3) { 6, 7, 8 }; // Front (2/2)
+    cube.faces[6] = (FVec3) { 5, 3, 7 }; // Left (1/2)
+    cube.faces[7] = (FVec3) { 3, 1, 5 }; // Left (2/2)
+    cube.faces[8] = (FVec3) { 1, 5, 2 }; // Top (1/2)
+    cube.faces[9] = (FVec3) { 2, 5, 6 }; // Top (2/2)
+    cube.faces[10] = (FVec3) { 3, 4, 7 }; // Bottom (1/2)
+    cube.faces[11] = (FVec3) { 4, 8, 7 }; // Bottom (2/2)
 
     return cube;
 }
@@ -291,13 +317,63 @@ void
 draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
 {
     // Draw wireframe by connecting vertices with lines
-    for (int i = 0; i < countof(cube.lines); i++) {
-        FVec2 line_coords = cube.lines[i];
+    for (int i = 0; i < countof(cube.edges); i++) {
+        FVec2 line_coords = cube.edges[i];
         FVec3 from_point = cube.points[(int) line_coords.x];
         FVec3 to_point = cube.points[(int) line_coords.y];
 
         Line line = make_3d_line(from_point, to_point);
         draw_3d_line_shape(pixels, camera, line, color);
+    }
+
+    for (int i = 0; i < countof(cube.faces); i++) {
+        FVec3 face = cube.faces[i];
+
+        FVec3 face_vertices[3];
+        face_vertices[0] = cube.points[(int) face.x-1];
+        face_vertices[1] = cube.points[(int) face.y-1];
+        face_vertices[2] = cube.points[(int) face.z-1];
+
+        Triangle projected_triangle;
+        for (int j = 0; j < 3; j++) {
+            FVec3 vertex = face_vertices[j];
+            vertex.x -= camera.position.x;
+            vertex.y -= camera.position.y;
+            vertex.z -= camera.position.z;
+
+            FVec2 projected_point = perspective_project_3d_point(camera, vertex);
+            // @DEBUG: Put it in the middle of the screen
+            // This changes the vanishing point
+            projected_point.x += (float) WINDOW_WIDTH / 2;
+            projected_point.y += (float) WINDOW_HEIGHT / 2;
+
+            projected_triangle.points[j] = projected_point;
+        }
+        // A -> B
+        draw_2d_segment_points(
+            pixels,
+            camera,
+            projected_triangle.points[0].x, projected_triangle.points[0].y,
+            projected_triangle.points[1].x, projected_triangle.points[1].y,
+            color
+        );
+        // B -> C
+        draw_2d_segment_points(
+            pixels,
+            camera,
+            projected_triangle.points[1].x, projected_triangle.points[1].y,
+            projected_triangle.points[2].x, projected_triangle.points[2].y,
+            color
+        );
+
+        // C -> A
+        draw_2d_segment_points(
+            pixels,
+            camera,
+            projected_triangle.points[2].x, projected_triangle.points[2].y,
+            projected_triangle.points[0].x, projected_triangle.points[0].y,
+            color
+        );
     }
 }
 
