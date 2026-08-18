@@ -92,6 +92,13 @@ struct Cube
 };
 typedef struct Cube Cube;
 
+enum Outline_Mode
+{
+    OUTLINE_MODE_EDGES = 0, // Only draw edges of model
+    OUTLINE_MODE_TRIANGLES = 1, // Only draw triangles that form the model
+};
+typedef enum Outline_Mode Outline_Mode;
+
 /// #region Creation functions
 
 Line make_3d_line(FVec3 from, FVec3 to);
@@ -111,7 +118,7 @@ void draw_2d_rectangle_outline_shape(uint32_t* pixels, Camera camera, Rectangle 
 void draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color); /* Draw 3D line */
 void draw_3d_plane_outline_shape(uint32_t* pixels, Camera camera, Plane plane, Color color); /* Draw 3D rectangle (or "plane") */
 void draw_3d_triangle_outline_shape(uint32_t* pixels, Camera camera, Triangle triangle, Color color); /* Draw 3D triangle */
-void draw_3d_cube_outline_shape(uint32_t* pixels, Camera camera, Cube cube, Color color); /* Draw 3D cube */
+void draw_3d_cube_outline_shape(uint32_t* pixels, Camera camera, Cube cube, Color color, Outline_Mode mode); /* Draw 3D cube */
 
 /// #region Transformation functions
 

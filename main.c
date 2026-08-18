@@ -56,13 +56,13 @@ SDL_AppInit(void** app_state, int argc, char** argv)
     }
 
     Camera camera;
-    camera.fov = 100;
+    camera.fov = 300;
     camera.position = (FVec3) { .x = 0, .y = 0, .z = -5 };
     state.camera = camera;
 
     cube = make_3d_cube(fvec3_zero());
     cube_rotation.x = 0.008;
-    cube_rotation.y = 0.004;
+    cube_rotation.y = 0.005;
     cube_rotation.z = 0.008;
 
     return SDL_APP_CONTINUE;
@@ -112,7 +112,7 @@ SDL_AppIterate(void* app_state)
     }
 
     transform_rotate_3d_cube(&cube, cube_rotation);
-    draw_3d_cube_shape(pixels, state->camera, cube, COLOR_GREEN);
+    draw_3d_cube_outline_shape(pixels, state->camera, cube, COLOR_GREEN, OUTLINE_MODE_TRIANGLES);
 
     SDL_UnlockSurface(state->pixel_buffer);
 

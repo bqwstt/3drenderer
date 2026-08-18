@@ -296,25 +296,35 @@ draw_3d_triangle_outline_shape(uint32_t* pixels, Camera camera, Triangle triangl
 
 /// Projects and draws a 3D cube
 void
-draw_3d_cube_outline_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
+draw_3d_cube_outline_shape(uint32_t* pixels, Camera camera, Cube cube, Color color, Outline_Mode mode)
 {
     // Draw wireframe by connecting vertices with lines
-    for (int i = 0; i < countof(cube.edges); i++) {
-        FVec2 line_coords = cube.edges[i];
-        FVec3 from_point = cube.points[(int) line_coords.x];
-        FVec3 to_point = cube.points[(int) line_coords.y];
+    switch (mode) {
+        case OUTLINE_MODE_EDGES:
+        {
+            for (int i = 0; i < countof(cube.edges); i++) {
+                FVec2 line_coords = cube.edges[i];
+                FVec3 from_point = cube.points[(int) line_coords.x];
+                FVec3 to_point = cube.points[(int) line_coords.y];
 
-        Line line = make_3d_line(from_point, to_point);
-        draw_3d_line_shape(pixels, camera, line, color);
-    }
-
-    for (int i = 0; i < countof(cube.faces); i++) {
-        FVec3 face = cube.faces[i];
-        Triangle triangle;
-        triangle.points[0] = cube.points[(int) face.x-1];
-        triangle.points[1] = cube.points[(int) face.y-1];
-        triangle.points[2] = cube.points[(int) face.z-1];
-        draw_3d_triangle_outline_shape(pixels, camera, triangle, color);
+                Line line = make_3d_line(from_point, to_point);
+                draw_3d_line_shape(pixels, camera, line, color);
+            }
+            break;
+        }
+        case OUTLINE_MODE_TRIANGLES:
+        {
+            for (int i = 0; i < countof(cube.faces); i++) {
+                FVec3 face = cube.faces[i];
+                Triangle triangle;
+                triangle.points[0] = cube.points[(int) face.x-1];
+                triangle.points[1] = cube.points[(int) face.y-1];
+                triangle.points[2] = cube.points[(int) face.z-1];
+                draw_3d_triangle_outline_shape(pixels, camera, triangle, color);
+            }
+            break;
+        }
+        default: break;
     }
 }
 
