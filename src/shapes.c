@@ -278,35 +278,42 @@ draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
 {
     // Draw wireframe by connecting vertices with lines
     for (int i = 0; i < countof(cube.lines); i++) {
-        FVec2 line = cube.lines[i];
-        FVec3 from_point = cube.points[(int) line.x];
-        FVec3 to_point = cube.points[(int) line.y];
+        FVec2 line_coords = cube.lines[i];
+        FVec3 from_point = cube.points[(int) line_coords.x];
+        FVec3 to_point = cube.points[(int) line_coords.y];
 
-        from_point.x -= camera.position.x;
-        from_point.y -= camera.position.y;
-        from_point.z -= camera.position.z;
+        Line line = make_3d_line(from_point, to_point);
+        draw_3d_line_shape(pixels, camera, line, color);
 
-        to_point.x -= camera.position.x;
-        to_point.y -= camera.position.y;
-        to_point.z -= camera.position.z;
+        // from_point.x -= camera.position.x;
+        // from_point.y -= camera.position.y;
+        // from_point.z -= camera.position.z;
 
-        FVec2 from = perspective_project_3d_point(camera, from_point);
-        FVec2 to = perspective_project_3d_point(camera, to_point);
+        // to_point.x -= camera.position.x;
+        // to_point.y -= camera.position.y;
+        // to_point.z -= camera.position.z;
 
-        // @DEBUG: Put it in the middle of the screen
-        // This changes the vanishing point
-        from.x += (float) WINDOW_WIDTH / 2;
-        from.y += (float) WINDOW_HEIGHT / 2;
-        to.x += (float) WINDOW_WIDTH / 2;
-        to.y += (float) WINDOW_HEIGHT / 2;
+        // FVec2 from = perspective_project_3d_point(camera, from_point);
+        // FVec2 to = perspective_project_3d_point(camera, to_point);
 
-        draw_2d_segment_points(
-            pixels,
-            camera,
-            from.x, from.y,
-            to.x, to.y,
-            color
-        );
+
+
+        // // @DEBUG: Put it in the middle of the screen
+        // // This changes the vanishing point
+        // from.x += (float) WINDOW_WIDTH / 2;
+        // from.y += (float) WINDOW_HEIGHT / 2;
+        // to.x += (float) WINDOW_WIDTH / 2;
+        // to.y += (float) WINDOW_HEIGHT / 2;
+
+        // draw_2d_segment_points(
+        //     pixels,
+        //     camera,
+        //     from.x, from.y,
+        //     to.x, to.y,
+        //     color
+        // );
+
+        // draw_3d_line_shape(uint32_t *pixels, Camera camera, Line line, Color color)
     }
 }
 
