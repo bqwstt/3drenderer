@@ -72,8 +72,15 @@ typedef struct Line Line;
 
 struct Plane
 {
-    FVec3 points[4];
-    FVec2 lines[4];
+    union {
+        struct {
+            FVec3 top_left;
+            FVec3 top_right;
+            FVec3 bottom_left;
+            FVec3 bottom_right;
+        };
+        FVec3 points[4];
+    };
 };
 typedef struct Plane Plane;
 

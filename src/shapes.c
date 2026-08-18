@@ -270,10 +270,10 @@ draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color)
 void
 draw_3d_plane_outline_shape(uint32_t* pixels, Camera camera, Plane plane, Color color)
 {
-    Line top = make_3d_line(plane.points[0], plane.points[1]);
-    Line right = make_3d_line(plane.points[1], plane.points[3]);
-    Line bottom = make_3d_line(plane.points[3], plane.points[2]);
-    Line left = make_3d_line(plane.points[2], plane.points[0]);
+    Line top = make_3d_line(plane.top_left, plane.top_right);
+    Line right = make_3d_line(plane.top_right, plane.bottom_right);
+    Line bottom = make_3d_line(plane.bottom_right, plane.bottom_left);
+    Line left = make_3d_line(plane.bottom_left, plane.top_left);
 
     draw_3d_line_shape(pixels, camera, top, color);
     draw_3d_line_shape(pixels, camera, right, color);
