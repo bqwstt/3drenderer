@@ -50,14 +50,14 @@ make_3d_cube(FVec3 position /*, float size */)
     float half_size = 1.0;
 
     // Create vertices
-    cube.points[0] = (FVec3) { .x = -half_size, .y = -half_size, .z =  half_size}; // Top left, front face
-    cube.points[1] = (FVec3) { .x =  half_size, .y = -half_size, .z =  half_size}; // Top right front face
-    cube.points[2] = (FVec3) { .x = -half_size, .y =  half_size, .z =  half_size}; // Bottom left, front face
-    cube.points[3] = (FVec3) { .x =  half_size, .y =  half_size, .z =  half_size}; // Bottom right, front face
-    cube.points[4] = (FVec3) { .x = -half_size, .y = -half_size, .z = -half_size}; // Top left, back face
-    cube.points[5] = (FVec3) { .x =  half_size, .y = -half_size, .z = -half_size}; // Top right back face
-    cube.points[6] = (FVec3) { .x = -half_size, .y =  half_size, .z = -half_size}; // Bottom left, back face
-    cube.points[7] = (FVec3) { .x =  half_size, .y =  half_size, .z = -half_size}; // Bottom right, back face
+    cube.points[0] = (FVec3) { .x = -half_size, .y = -half_size, .z =  half_size}; // Top left, back face
+    cube.points[1] = (FVec3) { .x =  half_size, .y = -half_size, .z =  half_size}; // Top right back face
+    cube.points[2] = (FVec3) { .x = -half_size, .y =  half_size, .z =  half_size}; // Bottom left, back face
+    cube.points[3] = (FVec3) { .x =  half_size, .y =  half_size, .z =  half_size}; // Bottom right, back face
+    cube.points[4] = (FVec3) { .x = -half_size, .y = -half_size, .z = -half_size}; // Top left, front face
+    cube.points[5] = (FVec3) { .x =  half_size, .y = -half_size, .z = -half_size}; // Top right front face
+    cube.points[6] = (FVec3) { .x = -half_size, .y =  half_size, .z = -half_size}; // Bottom left, front face
+    cube.points[7] = (FVec3) { .x =  half_size, .y =  half_size, .z = -half_size}; // Bottom right, front face
 
     for (int i = 0; i < 8; i++) {
         cube.points[i].x += position.x;
@@ -68,22 +68,22 @@ make_3d_cube(FVec3 position /*, float size */)
     // Connect vertices with lines
     // @TODO: Make these IVec2 instead?
     // Front face
-    cube.lines[0] = (FVec2) { 0, 1 }; // Top left (F) -> top right (F)
-    cube.lines[1] = (FVec2) { 1, 3 }; // Top right (F) -> bottom right (F)
-    cube.lines[2] = (FVec2) { 3, 2 }; // Bottom right (F) -> bottom left (F)
-    cube.lines[3] = (FVec2) { 2, 0 }; // Bottom left (F) -> top left (F)
+    cube.lines[0] = (FVec2) { 0, 1 }; // Top left (B) -> top right (B)
+    cube.lines[1] = (FVec2) { 1, 3 }; // Top right (B) -> bottom right (B)
+    cube.lines[2] = (FVec2) { 3, 2 }; // Bottom right (B) -> bottom left (B)
+    cube.lines[3] = (FVec2) { 2, 0 }; // Bottom left (B) -> top left (B)
 
     // Back face
-    cube.lines[4] = (FVec2) { 4, 5 }; // Top left (B) -> top right (B)
-    cube.lines[5] = (FVec2) { 5, 7 }; // Top right (B) -> bottom right (B)
-    cube.lines[6] = (FVec2) { 7, 6 }; // Bottom right (B) -> bottom left (B)
-    cube.lines[7] = (FVec2) { 6, 4 }; // Bottom left (B) -> top left (B)
+    cube.lines[4] = (FVec2) { 4, 5 }; // Top left (F) -> top right (F)
+    cube.lines[5] = (FVec2) { 5, 7 }; // Top right (F) -> bottom right (F)
+    cube.lines[6] = (FVec2) { 7, 6 }; // Bottom right (F) -> bottom left (F)
+    cube.lines[7] = (FVec2) { 6, 4 }; // Bottom left (F) -> top left (F)
 
     // Connect faces together
-    cube.lines[8] = (FVec2) { 0, 4 }; // Top left (F) -> top left (B)
-    cube.lines[9] = (FVec2) { 1, 5 }; // Top right (F) -> top right (B)
-    cube.lines[10] = (FVec2) { 2, 6 }; // Bottom left (F) -> bottom left (B)
-    cube.lines[11] = (FVec2) { 3, 7 }; // Bottom right (F) -> bottom right (B)
+    cube.lines[8] = (FVec2) { 0, 4 }; // Top left (B) -> top left (F)
+    cube.lines[9] = (FVec2) { 1, 5 }; // Top right (B) -> top right (F)
+    cube.lines[10] = (FVec2) { 2, 6 }; // Bottom left (B) -> bottom left (F)
+    cube.lines[11] = (FVec2) { 3, 7 }; // Bottom right (B) -> bottom right (F)
 
     return cube;
 }
