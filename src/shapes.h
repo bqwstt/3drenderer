@@ -102,9 +102,9 @@ void draw_2d_rectangle_outline_points(uint32_t* pixels, Camera camera, uint32_t 
 void draw_2d_rectangle_outline_shape(uint32_t* pixels, Camera camera, Rectangle rect, Color color); /* Draw 2D rectangle outlines */
 
 void draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color); /* Draw 3D line */
-void draw_3d_plane_shape(uint32_t* pixels, Camera camera, Plane plane, Color color); /* Draw 3D rectangle (or "plane") */
-void draw_3d_triangle_shape(uint32_t* pixels, Camera camera, Triangle triangle, Color color); /* Draw 3D triangle */
-void draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color); /* Draw 3D cube */
+void draw_3d_plane_outline_shape(uint32_t* pixels, Camera camera, Plane plane, Color color); /* Draw 3D rectangle (or "plane") */
+void draw_3d_triangle_outline_shape(uint32_t* pixels, Camera camera, Triangle triangle, Color color); /* Draw 3D triangle */
+void draw_3d_cube_outline_shape(uint32_t* pixels, Camera camera, Cube cube, Color color); /* Draw 3D cube */
 
 /// #region Transformation functions
 
@@ -112,7 +112,6 @@ void draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
 // If we turn this into a library, people can maybe just use "draw_*" functions
 // to draw and handle transformations themselves.
 void transform_rotate_2d_segment(Segment* segment, float angle);
-void transform_rotate_3d_line(Line* line, FVec3 rotation);
 void transform_rotate_3d_cube(Cube* cube, FVec3 rotation);
 
 #endif // SHAPES_H

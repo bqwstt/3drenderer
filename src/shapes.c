@@ -266,88 +266,37 @@ draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color)
     );
 }
 
-/// Projects and draws a 3D plane (2D `Rectangle` -> 3D `Plane`)
+/// Projects and draws a (filled) 3D plane (2D `Rectangle` -> 3D `Plane`)
 void
-draw_3d_plane_shape(uint32_t* pixels, Camera camera, Plane plane, Color color)
+draw_3d_plane_outline_shape(uint32_t* pixels, Camera camera, Plane plane, Color color)
 {
-    FVec2 projected_points[4];
-    for (int i = 0; i < 4; i++) {
-        FVec3 point = plane.points[i];
-        point.x -= camera.position.x;
-        point.y -= camera.position.y;
-        point.z -= camera.position.z;
+    Line top = make_3d_line(plane.points[0], plane.points[1]);
+    Line right = make_3d_line(plane.points[1], plane.points[3]);
+    Line bottom = make_3d_line(plane.points[3], plane.points[2]);
+    Line left = make_3d_line(plane.points[2], plane.points[0]);
 
-        projected_points[i] = perspective_project_3d_point(camera, point);
-        // @DEBUG: Put it in the middle of the screen
-        // This changes the vanishing point
-        projected_points[i].x += (float) WINDOW_WIDTH / 2;
-        projected_points[i].y += (float) WINDOW_HEIGHT / 2;
-    }
-
-    FVec2 top_left = projected_points[0];
-    FVec2 bottom_right = projected_points[3];
-    uint32_t width = bottom_right.x - top_left.x;
-    uint32_t height = bottom_right.y - top_left.y;
-
-    // @TODO: Check if it's rotated. In that case, we need to use a different algorithm.
-    draw_2d_rectangle_filled_points(
-        pixels,
-        camera,
-        top_left.x, top_left.y,
-        width, height,
-        color
-    );
+    draw_3d_line_shape(pixels, camera, top, color);
+    draw_3d_line_shape(pixels, camera, right, color);
+    draw_3d_line_shape(pixels, camera, bottom, color);
+    draw_3d_line_shape(pixels, camera, left, color);
 }
 
 /// Projects and draws a 3D triangle
 void
-draw_3d_triangle_shape(uint32_t* pixels, Camera camera, Triangle triangle, Color color)
+draw_3d_triangle_outline_shape(uint32_t* pixels, Camera camera, Triangle triangle, Color color)
 {
-    FVec2 projected_points[3];
-    for (int i = 0; i < 3; i++) {
-        FVec3 point = triangle.points[i];
-        point.x -= camera.position.x;
-        point.y -= camera.position.y;
-        point.z -= camera.position.z;
+    Line a_b = make_3d_line(triangle.points[0], triangle.points[1]);
+    Line b_c = make_3d_line(triangle.points[1], triangle.points[2]);
+    Line c_a = make_3d_line(triangle.points[2], triangle.points[0]);
 
-        FVec2 projected_point = perspective_project_3d_point(camera, point);
-        // @DEBUG: Put it in the middle of the screen
-        // This changes the vanishing point
-        projected_point.x += (float) WINDOW_WIDTH / 2;
-        projected_point.y += (float) WINDOW_HEIGHT / 2;
-        projected_points[i] = projected_point;
-    }
-
-    // A -> B
-    draw_2d_segment_points(
-        pixels,
-        camera,
-        projected_points[0].x, projected_points[0].y,
-        projected_points[1].x, projected_points[1].y,
-        color
-    );
-    // B -> C
-    draw_2d_segment_points(
-        pixels,
-        camera,
-        projected_points[1].x, projected_points[1].y,
-        projected_points[2].x, projected_points[2].y,
-        color
-    );
-
-    // C -> A
-    draw_2d_segment_points(
-        pixels,
-        camera,
-        projected_points[2].x, projected_points[2].y,
-        projected_points[0].x, projected_points[0].y,
-        color
-    );
+    draw_3d_line_shape(pixels, camera, a_b, color);
+    draw_3d_line_shape(pixels, camera, b_c, color);
+    draw_3d_line_shape(pixels, camera, c_a, color);
 }
 
 /// Projects and draws a 3D cube
 void
-draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
+draw_3d_cube_outline_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
 {
     // Draw wireframe by connecting vertices with lines
     for (int i = 0; i < countof(cube.edges); i++) {
@@ -365,7 +314,7 @@ draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
         triangle.points[0] = cube.points[(int) face.x-1];
         triangle.points[1] = cube.points[(int) face.y-1];
         triangle.points[2] = cube.points[(int) face.z-1];
-        draw_3d_triangle_shape(pixels, camera, triangle, color);
+        draw_3d_triangle_outline_shape(pixels, camera, triangle, color);
     }
 }
 
