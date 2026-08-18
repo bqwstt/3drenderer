@@ -110,6 +110,9 @@ draw_2d_point(uint32_t* pixels, Camera camera, uint32_t x, uint32_t y, Color col
     uint32_t target_x = x - camera.position.x;
     uint32_t target_y = y - camera.position.y;
 
+    // @FIXME: If a model gets out of bounds (<0 or > window width), the line sits at the corner
+    // and/or we crash the application. Investigate.
+    // Maybe we can go past the edges of the screen and optimize stuff in order not to draw the pixels.
     if (target_x >= 0 && target_x < WINDOW_WIDTH && target_y >= 0 && target_y < WINDOW_HEIGHT) {
         pixels[(WINDOW_WIDTH * target_y) + target_x] = color;
     }

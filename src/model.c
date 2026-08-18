@@ -40,7 +40,7 @@ model_load_from_obj(const char* filename)
 
             vertex.x = strtod(line_start + 2, &rest); // +2 for skipping the beginning we already checked
             vertex.y = -strtod(rest, &rest); // In OBJ, positive Y is our negative Y, so negate it
-            vertex.z = strtod(rest, NULL);
+            vertex.z = -strtod(rest, NULL); // So is Z.
 
             // Add vertex to model
             dyn_array_add(&model.vertices, &vertex);
