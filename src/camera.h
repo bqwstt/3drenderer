@@ -4,6 +4,9 @@
 #include "utils.h"
 #include "vec.h"
 
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 800
+
 struct Camera
 {
     FVec3 position;

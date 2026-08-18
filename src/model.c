@@ -8,6 +8,8 @@
 #include "dyn_array.h"
 #include "vec.h"
 
+/// #region Model construction
+
 Model
 model_load_from_obj(const char* filename)
 {
@@ -37,7 +39,7 @@ model_load_from_obj(const char* filename)
             char* rest;
 
             vertex.x = strtod(line_start + 2, &rest); // +2 for skipping the beginning we already checked
-            vertex.y = strtod(rest, &rest);
+            vertex.y = -strtod(rest, &rest); // In OBJ, positive Y is our negative Y, so negate it
             vertex.z = strtod(rest, NULL);
 
             // Add vertex to model
@@ -67,4 +69,37 @@ model_load_from_obj(const char* filename)
 
     SDL_free(contents);
     return model;
+}
+
+/// #region Model drawing
+
+void
+draw_3d_model_outline(uint32_t* pixels, Camera camera, Model model, Color color)
+{
+    for (int i = 0; i < model.faces.length; i++) {
+        FVec3* face = dyn_array_get(model.faces, i);
+        FVec3* vertex_a = dyn_array_get(model.vertices, (int) face->x-1);
+        FVec3* vertex_b = dyn_array_get(model.vertices, (int) face->y-1);
+        FVec3* vertex_c = dyn_array_get(model.vertices, (int) face->z-1);
+
+        Triangle triangle;
+        triangle.points[0] = *vertex_a;
+        triangle.points[1] = *vertex_b;
+        triangle.points[2] = *vertex_c;
+        draw_3d_triangle_outline_shape(pixels, camera, triangle, color);
+    }
+}
+
+/// #region Model transforms
+
+void
+transform_rotate_3d_model(Model* model, FVec3 rotation)
+{
+    // Rotate all vertices in the desired axis
+    for (int i = 0; i < model->vertices.length; i++) {
+        FVec3* vertex = dyn_array_get(model->vertices, i);
+        *vertex = fvec3_rotate_x(*vertex, rotation.x);
+        *vertex = fvec3_rotate_y(*vertex, rotation.y);
+        *vertex = fvec3_rotate_z(*vertex, rotation.z);
+    }
 }

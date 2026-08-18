@@ -27,7 +27,6 @@ void
 dyn_array_add(Dyn_Array* array, const void* element)
 {
     if (array->length == array->capacity) {
-        void* data = array->data;
         size_t new_capacity = array->capacity * 2; 
         array->data = SDL_realloc(array->data, new_capacity * array->element_size);
         array->capacity = new_capacity;

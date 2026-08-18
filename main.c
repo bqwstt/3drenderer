@@ -4,6 +4,7 @@
 
 #include "src/shapes.h"
 #include "src/camera.h"
+#include "src/model.h"
 
 struct Renderer_State
 {
@@ -16,6 +17,8 @@ struct Renderer_State
 
 static Cube cube;
 FVec3 cube_rotation = { 0, 0, 0 };
+
+static Model model;
 
 SDL_AppResult
 SDL_AppInit(void** app_state, int argc, char** argv)
@@ -56,14 +59,16 @@ SDL_AppInit(void** app_state, int argc, char** argv)
     }
 
     Camera camera;
-    camera.fov = 300;
-    camera.position = (FVec3) { .x = 0, .y = 0, .z = -5 };
+    camera.fov = 400.0;
+    camera.position = (FVec3) { .x = 0, .y = -2, .z = -5 };
     state.camera = camera;
 
     cube = make_3d_cube(fvec3_zero());
-    cube_rotation.x = 0.008;
+    cube_rotation.x = 0.000;
     cube_rotation.y = 0.005;
-    cube_rotation.z = 0.008;
+    cube_rotation.z = 0.000;
+
+    model = model_load_from_obj("./assets/teapot.obj");
 
     return SDL_APP_CONTINUE;
 }
@@ -111,8 +116,8 @@ SDL_AppIterate(void* app_state)
         }
     }
 
-    transform_rotate_3d_cube(&cube, cube_rotation);
-    draw_3d_cube_outline_shape(pixels, state->camera, cube, COLOR_GREEN, OUTLINE_MODE_TRIANGLES);
+    transform_rotate_3d_model(&model, cube_rotation);
+    draw_3d_model_outline(pixels, state->camera, model, COLOR_GREEN);
 
     SDL_UnlockSurface(state->pixel_buffer);
 

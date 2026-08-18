@@ -7,10 +7,6 @@
 #include "vec.h"
 #include "camera.h"
 
-// @TODO: Move these
-#define WINDOW_WIDTH 1200
-#define WINDOW_HEIGHT 800
-
 // Using ARGB8888 format
 typedef uint32_t Color;
 #define COLOR_BLACK     (Color) 0xFF000000
