@@ -41,7 +41,7 @@ typedef struct Rectangle Rectangle;
 
 struct Triangle
 {
-    FVec2 points[3];
+    FVec3 points[3];
 };
 typedef struct Triangle Triangle;
 
@@ -103,6 +103,7 @@ void draw_2d_rectangle_outline_shape(uint32_t* pixels, Camera camera, Rectangle 
 
 void draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color); /* Draw 3D line */
 void draw_3d_plane_shape(uint32_t* pixels, Camera camera, Plane plane, Color color); /* Draw 3D rectangle (or "plane") */
+void draw_3d_triangle_shape(uint32_t* pixels, Camera camera, Triangle triangle, Color color); /* Draw 3D triangle */
 void draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color); /* Draw 3D cube */
 
 /// #region Transformation functions

@@ -85,19 +85,6 @@ make_3d_cube(FVec3 position /*, float size */)
     cube.edges[11] = (FVec2) { 3, 7 }; // Bottom right (B) -> bottom right (F)
 
     // Connect (triangular) faces (using face ids, starting from 1)
-    // cube.faces[0] = (FVec3) { 1, 2, 3 }; // Front (1/2)
-    // cube.faces[1] = (FVec3) { 1, 3, 4 }; // Front (2/2)
-    // cube.faces[2] = (FVec3) { 4, 3, 5 }; // Right (1/2)
-    // cube.faces[3] = (FVec3) { 4, 5, 6 }; // Right (2/2)
-    // cube.faces[4] = (FVec3) { 6, 5, 7 }; // Back (1/2)
-    // cube.faces[5] = (FVec3) { 6, 7, 8 }; // Back (2/2)
-    // cube.faces[6] = (FVec3) { 8, 7, 2 }; // Left (1/2)
-    // cube.faces[7] = (FVec3) { 8, 2, 1 }; // Left (2/2)
-    // cube.faces[8] = (FVec3) { 2, 7, 5 }; // Top (1/2)
-    // cube.faces[9] = (FVec3) { 2, 5, 3 }; // Top (2/2)
-    // cube.faces[10] = (FVec3) { 6, 8, 1 }; // Bottom (1/2)
-    // cube.faces[11] = (FVec3) { 6, 1, 4 }; // Bottom (2/2)
-
     cube.faces[0] = (FVec3) { 1, 2, 3 }; // Back (1/2)
     cube.faces[1] = (FVec3) { 2, 4, 3 }; // Back (2/2)
     cube.faces[2] = (FVec3) { 2, 6, 4 }; // Right (1/2)
@@ -254,7 +241,7 @@ void
 draw_3d_line_shape(uint32_t* pixels, Camera camera, Line line, Color color)
 {
     FVec2 projected_points[2];
-    for (int i = 0; i < countof(line.points); i++) {
+    for (int i = 0; i < 2; i++) {
         FVec3 point = line.points[i];
         point.x -= camera.position.x;
         point.y -= camera.position.y;
@@ -284,7 +271,7 @@ void
 draw_3d_plane_shape(uint32_t* pixels, Camera camera, Plane plane, Color color)
 {
     FVec2 projected_points[4];
-    for (int i = 0; i < countof(plane.points); i++) {
+    for (int i = 0; i < 4; i++) {
         FVec3 point = plane.points[i];
         point.x -= camera.position.x;
         point.y -= camera.position.y;
@@ -312,6 +299,52 @@ draw_3d_plane_shape(uint32_t* pixels, Camera camera, Plane plane, Color color)
     );
 }
 
+/// Projects and draws a 3D triangle
+void
+draw_3d_triangle_shape(uint32_t* pixels, Camera camera, Triangle triangle, Color color)
+{
+    FVec2 projected_points[3];
+    for (int i = 0; i < 3; i++) {
+        FVec3 point = triangle.points[i];
+        point.x -= camera.position.x;
+        point.y -= camera.position.y;
+        point.z -= camera.position.z;
+
+        FVec2 projected_point = perspective_project_3d_point(camera, point);
+        // @DEBUG: Put it in the middle of the screen
+        // This changes the vanishing point
+        projected_point.x += (float) WINDOW_WIDTH / 2;
+        projected_point.y += (float) WINDOW_HEIGHT / 2;
+        projected_points[i] = projected_point;
+    }
+
+    // A -> B
+    draw_2d_segment_points(
+        pixels,
+        camera,
+        projected_points[0].x, projected_points[0].y,
+        projected_points[1].x, projected_points[1].y,
+        color
+    );
+    // B -> C
+    draw_2d_segment_points(
+        pixels,
+        camera,
+        projected_points[1].x, projected_points[1].y,
+        projected_points[2].x, projected_points[2].y,
+        color
+    );
+
+    // C -> A
+    draw_2d_segment_points(
+        pixels,
+        camera,
+        projected_points[2].x, projected_points[2].y,
+        projected_points[0].x, projected_points[0].y,
+        color
+    );
+}
+
 /// Projects and draws a 3D cube
 void
 draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
@@ -328,52 +361,11 @@ draw_3d_cube_shape(uint32_t* pixels, Camera camera, Cube cube, Color color)
 
     for (int i = 0; i < countof(cube.faces); i++) {
         FVec3 face = cube.faces[i];
-
-        FVec3 face_vertices[3];
-        face_vertices[0] = cube.points[(int) face.x-1];
-        face_vertices[1] = cube.points[(int) face.y-1];
-        face_vertices[2] = cube.points[(int) face.z-1];
-
-        Triangle projected_triangle;
-        for (int j = 0; j < 3; j++) {
-            FVec3 vertex = face_vertices[j];
-            vertex.x -= camera.position.x;
-            vertex.y -= camera.position.y;
-            vertex.z -= camera.position.z;
-
-            FVec2 projected_point = perspective_project_3d_point(camera, vertex);
-            // @DEBUG: Put it in the middle of the screen
-            // This changes the vanishing point
-            projected_point.x += (float) WINDOW_WIDTH / 2;
-            projected_point.y += (float) WINDOW_HEIGHT / 2;
-
-            projected_triangle.points[j] = projected_point;
-        }
-        // A -> B
-        draw_2d_segment_points(
-            pixels,
-            camera,
-            projected_triangle.points[0].x, projected_triangle.points[0].y,
-            projected_triangle.points[1].x, projected_triangle.points[1].y,
-            color
-        );
-        // B -> C
-        draw_2d_segment_points(
-            pixels,
-            camera,
-            projected_triangle.points[1].x, projected_triangle.points[1].y,
-            projected_triangle.points[2].x, projected_triangle.points[2].y,
-            color
-        );
-
-        // C -> A
-        draw_2d_segment_points(
-            pixels,
-            camera,
-            projected_triangle.points[2].x, projected_triangle.points[2].y,
-            projected_triangle.points[0].x, projected_triangle.points[0].y,
-            color
-        );
+        Triangle triangle;
+        triangle.points[0] = cube.points[(int) face.x-1];
+        triangle.points[1] = cube.points[(int) face.y-1];
+        triangle.points[2] = cube.points[(int) face.z-1];
+        draw_3d_triangle_shape(pixels, camera, triangle, color);
     }
 }
 
